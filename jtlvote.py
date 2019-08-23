@@ -27,14 +27,26 @@ for soup in soup_menu:
             bolds = content.find_all('strong')
             if bolds:
                 for word in bolds:
-                    #print(post['id'] + ' ' + username + ' ' +  word.contents[0].string)
-                    for person, votes in postvotes.items():
-                        if votes[0] is username:
-                            votes[2] = False
                     if word.contents:
-                        postvotes[word.contents[0].string] = [username, post['id'], True]
+                        #print(post['id'] + ' ' + username + ' ' +  word.contents[0].string)
+                        for person, votes in postvotes.items():
+                            for vote in votes:
+                                if vote[0] is username:
+                                    vote[2] = False
+               
+                        if word.contents[0].string not in postvotes.keys():
+                            postvotes[word.contents[0].string] = []
+                        postvotes[word.contents[0].string].append([username, post['id'], True])
 
-print(postvotes)
+#print(postvotes)
 
-for person, votes in postvotes:
-    
+for person, votes in postvotes.items():
+    print('Votes for ' + person + ':')
+    for vote in votes:
+        vote_link = 'https://justthelads.party/mafia/viewtopic.php?p=' + vote[1][1:]
+        vote_text = vote[0]
+        if not vote[2]:
+            vote_text = '[s]' + vote_text + '[/s]'
+        vote_text = '[url=' + vote_link + ']' + vote_text + '[/url]'
+        print('\t' + vote_text)
+    print('')
