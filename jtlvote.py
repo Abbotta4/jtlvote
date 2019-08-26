@@ -1,8 +1,8 @@
 import requests, re
 from bs4 import BeautifulSoup
 
-startpost = 651 # https://justthelads.party/mafia/viewtopic.php?p=584#p584
-endpost = 692   # https://justthelads.party/mafia/viewtopic.php?p=647#p647
+startpost = 651 # the post number to start counting votes on
+endpost = 692   # the post number to stop counting votes on
 
 soup_menu = [BeautifulSoup('<html></html', 'html.parser')]
 p = startpost
@@ -32,7 +32,7 @@ for soup in soup_menu:
                     if word.contents:
                         for person, votes in postvotes.items():
                             for vote in votes:
-                                if vote[0] is username:
+                                if vote[0] == username:
                                     vote[2] = False
                
                         if word.contents[0].string not in postvotes.keys():
