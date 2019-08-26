@@ -2,7 +2,8 @@ import requests, re
 from bs4 import BeautifulSoup
 
 startpost = 651 # the post number to start counting votes on
-endpost = 692   # the post number to stop counting votes on
+endpost = 693   # the post number to stop counting votes on
+votesneeded = 8
 
 soup_menu = [BeautifulSoup('<html></html', 'html.parser')]
 p = startpost
@@ -39,13 +40,19 @@ for soup in soup_menu:
                             postvotes[word.contents[0].string] = []
                         postvotes[word.contents[0].string].append([username, post['id'], True])
 
+print('[center]', end = '')                        
 for person, votes in postvotes.items():
-    print('Votes for ' + person + ':')
+    numvotes = 0
     for vote in votes:
-        vote_link = 'https://justthelads.party/mafia/viewtopic.php?p=' + vote[1][1:]
+        if vote[2]:
+            numvotes += 1
+    print('[color=lightgreen][size=150]' + person + ' ' + str(numvotes) + '/' + str(votesneeded) + '[/size][/color]')
+    for vote in votes:
+        vote_link = 'https://justthelads.party/mafia/viewtopic.php?p=' + vote[1][1:] + '#p' + vote[1][1:]
         vote_text = vote[0]
         if not vote[2]:
             vote_text = '[s]' + vote_text + '[/s]'
         vote_text = '[url=' + vote_link + ']' + vote_text + '[/url]'
         print('\t' + vote_text)
     print('')
+print('[color=lightgreen]There are less than [size=150]XX hours[/size] in Day X[/color][/center]')
