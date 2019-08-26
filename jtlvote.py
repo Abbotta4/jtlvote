@@ -1,8 +1,8 @@
 import requests, re
 from bs4 import BeautifulSoup
 
-startpost = 584 # https://justthelads.party/mafia/viewtopic.php?p=584#p584
-endpost = 646   # https://justthelads.party/mafia/viewtopic.php?p=647#p647
+startpost = 651 # https://justthelads.party/mafia/viewtopic.php?p=584#p584
+endpost = 692   # https://justthelads.party/mafia/viewtopic.php?p=647#p647
 
 soup_menu = [BeautifulSoup('<html></html', 'html.parser')]
 p = startpost
@@ -24,11 +24,12 @@ for soup in soup_menu:
         if int(post['id'][1:]) >= startpost and int(post['id'][1:]) <= endpost:
             username = post.find(class_=re.compile('username.*')).contents[0].string
             content = post.find(class_='content')
+            for blockquote in content.find_all("blockquote"):
+                blockquote.decompose()
             bolds = content.find_all('strong')
             if bolds:
                 for word in bolds:
                     if word.contents:
-                        #print(post['id'] + ' ' + username + ' ' +  word.contents[0].string)
                         for person, votes in postvotes.items():
                             for vote in votes:
                                 if vote[0] is username:
@@ -37,8 +38,6 @@ for soup in soup_menu:
                         if word.contents[0].string not in postvotes.keys():
                             postvotes[word.contents[0].string] = []
                         postvotes[word.contents[0].string].append([username, post['id'], True])
-
-#print(postvotes)
 
 for person, votes in postvotes.items():
     print('Votes for ' + person + ':')
